@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+  front:
+    container_name: webstart_python_front
+    build: 
+      context: docker/nginx
+    restart: 'no'
+    ports:
+      - ${HTTP_PORT:-80}:80
+    environment:
+      TZ: ${DEFAULT_TIMEZONE:-Europe/Kiev} 
+    env_file:
+      - .env
+
+  backend:
+    container_name: webstart_python_backend
+    build: 
+      context: docker/python
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+    restart: 'no'
+    environment:
+      TZ: ${DEFAULT_TIMEZONE:-Europe/Kiev} 
+    ports:
+      - 5678:5678
+    volumes:
+      - ./app:/var/www/html
+    depends_on:
+      - front
+      - db
+    env_file:
+      - .env
+
+  db:
+    container_name: webstart_python_db
+    build:
+      context: ./docker/mysql
+    restart: 'no'
+    environment:
+      TZ: ${DEFAULT_TIMEZONE:-Europe/Kiev} 
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-rootpw}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-database}
+      MYSQL_USER: ${MYSQL_USER:-user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
