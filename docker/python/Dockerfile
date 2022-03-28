@@ -13,10 +13,11 @@ RUN addgroup -g ${GID} app \
     && adduser -D -G app -s /bin/bash -u ${UID} app \
     && echo "ALL ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
+RUN pip install debugpy aiohttp
+
 ADD root /
 RUN chmod a+x /usr/local/bin/entrypoint* 
 
-RUN pip install debugpy aiohttp
 
 USER app
 

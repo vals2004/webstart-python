@@ -4,6 +4,7 @@ cd /var/www/html
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 
-python -u -m debugpy --listen 0.0.0.0:5678 app.py 
+python manage.py migrate
+RUN_SERVER=yes python manage.py runserver 0.0.0.0:9000
 
 #tail -f /dev/null
